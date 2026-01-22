@@ -38,7 +38,10 @@ function App() {
 
     // Function to delete item from list use id to delete
     const deleteItem = (id) => {
-        setList(list.filter((item) => item.id !== id));
+        if (confirm("Are you sure you want to delete this item?")) {
+            setList(list.filter((item) => item.id !== id));
+            return;
+        }
     };
 
     const editItem = (index) => {

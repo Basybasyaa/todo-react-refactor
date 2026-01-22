@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 
 function App() {
     const [userInput, setUserInput] = useState("");
+    const [filter, setFilter] = useState("all");
     const [list, setList] = useState(() => {
         const savedList = localStorage.getItem("todoList");
         return savedList ? JSON.parse(savedList) : [];
@@ -28,8 +29,9 @@ function App() {
         setList([
             ...list,
             {
-                id: Math.random(),
+                id: Date.now(),
                 value: userInput,
+                completed: false,
             },
         ]);
         // Clear input value
@@ -56,6 +58,23 @@ function App() {
     const handleSubmit = (e) => {
         e.preventDefault();
         addItem();
+    };
+
+    const filteredList = list.filter((item) => {
+        if (filter === "active") {
+            return !item.completed;
+        }
+        return true;
+    });
+
+    const toogleCompleted = (id) => {
+        setList(
+            list.map((item) =>
+                item.id === id 
+                ? { ...item, completed: !item.completed } 
+                : item
+            )
+        )
     };
 
     
@@ -90,6 +109,20 @@ function App() {
                             >
                                 ADD
                             </Button>
+                            <Button
+                                variant="secondary"
+                                className="mt-2 ms-2"
+                                onClick={() => setFilter("all")}
+                            >
+                                All
+                            </Button>
+                            <Button
+                                variant="secondary"
+                                className="mt-2 ms-2"
+                                onClick={() => setFilter("active")}
+                            >
+                                Active
+                            </Button>
                         </InputGroup>
                     </InputGroup>
                     </form>
@@ -98,9 +131,16 @@ function App() {
             <Row>
                 <Col md={{ span: 5, offset: 4 }}>
                     <ListGroup>
-                        {list.length === 0 && <p>No items to show!</p>}
+                        {filteredList.length === 0 && (
+                        <p>
+                            {filter === "active"
+                            ? "Tidak ada todo aktif"
+                            : "Belum ada todo"}
+                        </p>
+                        )}
+
                         {/* map over and print items */}
-                        {list.map((item, index) => (
+                        {filteredList.map((item, index) => (
                                 <ListGroup.Item
                                     key={item.id}
                                     variant="dark"
@@ -108,7 +148,20 @@ function App() {
                                             justifyContent:'space-between'
                                         }}
                                 >
-                                    {item.value}
+                                    <input
+                                        type="checkbox"
+                                        checked={item.completed}
+                                        onChange={() => toogleCompleted(item.id)}
+                                        />
+                                    <span 
+                                        style={{
+                                            textDecoration: item.completed 
+                                            ? "line-through" 
+                                            : "none",
+                                            marginLeft: "8px",
+                                        }}>
+                                            {item.value} 
+                                    </span>
                                     <span>
                                     <Button style={{marginRight:"10px"}}
                                     variant = "light"

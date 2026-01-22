@@ -37,12 +37,12 @@ function App() {
     }
 
     // Function to delete item from list use id to delete
-    const deleteItem = (id) => {
+    function deleteItem(id) {
         if (confirm("Are you sure you want to delete this item?")) {
             setList(list.filter((item) => item.id !== id));
             return;
         }
-    };
+    }
 
     const editItem = (index) => {
         const editedTodo = prompt("Edit your item:", list[index].value);
@@ -98,6 +98,7 @@ function App() {
             <Row>
                 <Col md={{ span: 5, offset: 4 }}>
                     <ListGroup>
+                        {list.length === 0 && <p>No items to show!</p>}
                         {/* map over and print items */}
                         {list.map((item, index) => (
                                 <ListGroup.Item

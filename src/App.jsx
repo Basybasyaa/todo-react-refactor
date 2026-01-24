@@ -22,6 +22,10 @@ function App() {
         localStorage.setItem("todoList", JSON.stringify(list));
     }, [list]);
 
+    const capitalizeFirst = (input) => {
+        return input.charAt(0).toUpperCase() + input.slice(1);
+    }
+
     // Add item if user input in not empty
     const addItem = () => {
         if (userInput.trim() === "") return;
@@ -30,7 +34,7 @@ function App() {
             ...list,
             {
                 id: Date.now(),
-                value: userInput,
+                value: capitalizeFirst(userInput.trim()),
                 completed: false,
             },
         ]);
@@ -89,7 +93,7 @@ function App() {
             <hr />
 
             <Row>
-                <Col md={{ span: 5, offset: 4 }}>
+                <Col md={6} className="mx-auto">
                     <form onSubmit={handleSubmit}>
                     <InputGroup className="mb-3">
                         <FormControl
@@ -129,7 +133,7 @@ function App() {
                 </Col>
             </Row>
             <Row>
-                <Col md={{ span: 5, offset: 4 }}>
+                <Col md={6} className="mx-auto">
                     <ListGroup>
                         {filteredList.length === 0 && (
                         <p>
@@ -143,8 +147,10 @@ function App() {
                         {filteredList.map((item, index) => (
                                 <ListGroup.Item
                                     key={item.id}
+                                    maxWidth="100%"
                                     variant="dark"
-                                    style={{display:"flex",
+                                    style={{display:"flex",                                                
+                                            alignItems:'stretch',
                                             justifyContent:'space-between'
                                         }}
                                 >
@@ -155,6 +161,7 @@ function App() {
                                         />
                                     <span 
                                         style={{
+                                            wordBreak: "break-word",
                                             textDecoration: item.completed 
                                             ? "line-through" 
                                             : "none",
@@ -162,9 +169,14 @@ function App() {
                                         }}>
                                             {item.value} 
                                     </span>
-                                    <span>
-                                    <Button style={{marginRight:"10px"}}
-                                    variant = "light"
+                                    <span
+                                    style = {{
+                                        display: "flex",
+                                        gap: "4px",
+                                        flexShrink: 0,
+                                    }}>
+
+                                    <Button variant = "light"
                                     onClick={() => deleteItem(item.id)}>
                                         Delete
                                     </Button>
